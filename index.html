@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Detail Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <!-- Transaction Widget -->
+    <div id="transaction-widget" class="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
+        <h3 class="text-lg font-semibold mb-4">Transaction Detail Viewer</h3>
+        <input type="text" id="issueIdInput" placeholder="Enter Issue ID"
+               class="w-full px-4 py-2 border border-gray-300 rounded-md mb-4">
+        <button id="submitBtn" class="w-full bg-purple-500 text-white py-2 rounded-md hover:bg-purple-600" style="background-color: #670c78;">
+            Get Transaction Details
+        </button>
+        </button>
+        <div id="transactionDetails" class="mt-6 text-gray-700"></div>
+    </div>
+
+    <script>
+   document.getElementById('submitBtn').addEventListener('click', function() {
+    const issueId = document.getElementById('issueIdInput').value;
+    console.log("Issue ID:", issueId);  
+
+    if (issueId) {
+        const url = `https://api-v2-sandbox.chimoney.io/v0.2/accounts/issue-id-transactions?issueID=${encodeURIComponent(issueId)}`;
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-KEY': '3a9331bb0ed50f637f92e6f710ee57f6d739424f5fe014f7cdc7364f727a5158'  // Replace with your API key
+            },
+            body: JSON.stringify({ issueID: issueId })  
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('API Response:', data);
+
+            if (data.data) {
+                const transaction = data.data[0];
+                document.getElementById('transactionDetails').innerHTML = `
+                    <p><strong>ID:</strong> ${transaction.id || 'N/A'}</p>
+                    <p><strong>Date:</strong> ${new Date(transaction.issueDate).toLocaleString() || 'N/A'}</p>
+                    <p><strong>Amount:</strong> ${transaction.valueInUSD || 'N/A'} USD</p>
+                    <p><strong>Status:</strong> ${transaction.status || 'N/A'}</p>
+                `;
+            } else {
+                document.getElementById('transactionDetails').innerHTML = `
+                    <p class="text-red-500">No transaction details found. Please check the Issue ID.</p>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('transactionDetails').innerHTML = `
+                <p class="text-red-500">Failed to retrieve transaction details. Please try again.</p>
+            `;
+        });
+    } else {
+        alert('Please enter a valid Issue ID.');
+    }
+});
+
+
+    </script>
+</body>
+</html>
