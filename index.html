@@ -26,13 +26,13 @@
     console.log("Issue ID:", issueId);  
 
     if (issueId) {
-        const url = `https://api-v2-sandbox.chimoney.io/v0.2/accounts/issue-id-transactions?issueID=${encodeURIComponent(issueId)}`;
+        const url = `https://api-v2-sandbox.chimoney.io/v0.2/accounts/issue-id-transactions?issueID=${encodeURIComponent(issueId)}`; //Enter issueId
         
         fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-KEY': '3a9331bb0ed50f637f92e6f710ee57f6d739424f5fe014f7cdc7364f727a5158'  // Replace with your API key
+                'X-API-KEY': ''  // Replace with your API key
             },
             body: JSON.stringify({ issueID: issueId })  
         })
